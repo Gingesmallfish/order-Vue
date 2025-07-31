@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+
+/* 滚动条样式 */
+.el-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.el-menu::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+.el-menu::-webkit-scrollbar-thumb {
+    background: rgba(147, 197, 253, 0.5); /* 浅蓝色 */
+    border-radius: 10px;
+}
+
+.el-menu::-webkit-scrollbar-thumb:hover {
+    background: rgba(186, 230, 253, 0.7); /* 悬停时的浅蓝色 */
+}
+
+
+
+
+/* 一级菜单过渡动画 */
+.menu-item-enter-active,
+.menu-item-leave-active {
+    transition: all 0.3s ease;
+}
+
+.menu-item-enter-from,
+.menu-item-leave-to {
+    opacity: 0;
+    transform: translateX(-10px);
+}
+
+/* 二级菜单过渡动画 */
+.submenu-enter-active,
+.submenu-leave-active {
+    transition: all 0.25s ease-out;
+}
+
+.submenu-enter-from,
+.submenu-leave-to {
+    opacity: 0;
+    transform: translateX(10px);
+}
+
+/* 子菜单展开/折叠动画 */
+::v-deep .el-sub-menu .el-menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+}
+
+::v-deep .el-sub-menu.is-opened .el-menu {
+    max-height: 500px; /* 足够容纳子菜单的高度 */
+}
+
+/* 图标过渡效果 */
+::v-deep .el-icon {
+    transition: transform 0.2s ease;
+}
+
+::v-deep .el-menu-item:hover .el-icon,
+::v-deep .el-sub-menu__title:hover .el-icon {
+    transform: scale(1.1);
+}
