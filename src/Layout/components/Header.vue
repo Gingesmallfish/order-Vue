@@ -77,13 +77,13 @@
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowDown, Close, Search, FullScreen, Refresh } from '@element-plus/icons-vue'
-import { logout, } from '@/api/auth.js'
-import store from '@/store/index.js'
+import { logout } from '@/api/auth.js'
 import { computed, ref, nextTick } from 'vue'
 import {searchMenu} from "@/api/menu.js";
+import {useStore} from "vuex";
 
 const router = useRouter()
-
+const store = useStore()
 // 获取本地用户数据
 const username = computed(() => {
   return store.state.userinfo.username || '匿名用户' // 增加兜底，避免空值
@@ -130,24 +130,40 @@ const openSearch = () => {
   })
 }
 
-const closeSearch = () => {
-  showSearch.value = false
-  searchText.value = ''
-}
+
 
 const performSearch = () => {
+  if (!searchText.value.trim()) {
+    ElMessage.warning('请输入搜索内容')
+    return
+  }
+
   searchMenu({
     searchText: searchText.value
   }).then((res) => {
     console.log('搜索响应:', res) // 添加这行来查看完整响应
     if (res.data.code === 200) {
       ElMessage.success(res.data.message || '搜索成功')
-      // 这里搜索成功我的侧边栏要展示对应的层级，还有内容
 
+      // 获取三层嵌套的 data 数据
+      const searchResults = res.data.data || []
+
+      // 当我不想搜索时候，既要返回菜单数据，也要返回搜索结果，就是清空输入框的内容的时候
+
+      // 将搜索结果保存到 Vuex
+      store.dispatch('setSearchResults', searchResults)
     } else {
       ElMessage.error(res.data?.message || '搜索失败')
     }
   })
+}
+
+
+// 关闭搜索是清除状态
+const closeSearch = () => {
+  showSearch.value = false
+  searchText.value = ''
+
 }
 
 // 全屏切换功能
